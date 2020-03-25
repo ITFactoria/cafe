@@ -39,7 +39,7 @@ public class ContactoServiceImpl implements IContactoService{
     public Contacto consultarContacto(Long id) {
         return contactoDao.findById(id).orElse(null);
     }
-
+    
     @Override
     @Transactional
     public void eliminarContacto(Long id) {

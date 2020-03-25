@@ -5,17 +5,18 @@
  */
 package com.itfactoria.cafe.backend.restapi.models.services;
 
-import com.itfactoria.cafe.backend.restapi.models.entity.Contacto;
+import com.itfactoria.cafe.backend.restapi.models.entity.Activo;
 import java.util.List;
 
 /**
  *
  * @author jaironino
  */
-public interface IContactoService {
-    public Contacto crearContacto(Contacto contacto);
-    public List<Contacto> listarContactos();
-    public Contacto consultarContacto(Long id);
-    public void eliminarContacto(Long id);
+public interface IActivoService {
+    public Activo crearActivo(Activo activo);
+    public List<Activo> listarActivos();
+    public Activo consultarActivo(Long id);
+    public void eliminarActivo(Long id);
+    
     
 }

@@ -5,8 +5,8 @@
  */
 package com.itfactoria.cafe.backend.restapi.controllers;
 
-import com.itfactoria.cafe.backend.restapi.models.entity.Contacto;
-import com.itfactoria.cafe.backend.restapi.models.services.IContactoService;
+import com.itfactoria.cafe.backend.restapi.models.entity.Activo;
+import com.itfactoria.cafe.backend.restapi.models.services.IActivoService;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,30 +30,29 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
-public class ContactoRestController {
-
+public class ActivoRestController {
+    
     @Autowired
-    private IContactoService contactoService;
+    private IActivoService activoService;
 
-    @GetMapping("/contactos")
-    public List<Contacto> listarContactos() {
-        return contactoService.listarContactos();
-
+    @GetMapping("/activos")
+    public List<Activo> index() {
+        return activoService.listarActivos();
     }
-
-    @GetMapping("/contactos/{id}")
+    
+    @GetMapping("/activos/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
 
-        Contacto contacto = null;
+        Activo activo = null;
         Map<String, Object> response = new HashMap<>();
 
         try {
-            contacto = contactoService.consultarContacto(id);
-            if (contacto == null) {
-                response.put("mensaje", "El contacto con ID ".concat(id.toString().concat(" no existe en la base de datos")));
+            activo = activoService.consultarActivo(id);
+            if (activo == null) {
+                response.put("mensaje", "El activo con ID ".concat(id.toString().concat(" no existe en la base de datos")));
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<Contacto>(contacto, HttpStatus.OK);
+                return new ResponseEntity<Activo>(activo, HttpStatus.OK);
             }
 
         } catch (DataAccessException dae) {
@@ -61,22 +60,22 @@ public class ContactoRestController {
             response.put("error", dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
+
     }
+    @PostMapping("/activos")
+    public ResponseEntity<?> create(@RequestBody Activo activo) {
 
-    @PostMapping("/contactos")
-    public ResponseEntity<?> create(@RequestBody Contacto contacto) {
-
-        Contacto contactoNuevo = null;
+        Activo activoNuevo = null;
         Map<String, Object> response = new HashMap<>();
 
         try {
-            contactoNuevo = contactoService.crearContacto(contacto);
-            if (contactoNuevo == null) {
-                response.put("mensaje", "El contacto con ID ".concat(contacto.getId().toString().concat(" no fue creado en la base de datos")));
+            activoNuevo = activoService.crearActivo(activo);
+            if (activoNuevo == null) {
+                response.put("mensaje", "El activo con ID ".concat(activo.getId().toString().concat(" no fue creada en la base de datos")));
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             } else {
-                response.put("mensaje", "El contacto fue creado de forma exitosa");
-                response.put("empresa", contactoNuevo);
+                response.put("mensaje", "El activo fue creada de forma exitosa");
+                response.put("empresa", activoNuevo);
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 
             }
@@ -87,34 +86,37 @@ public class ContactoRestController {
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
-    @PutMapping("/contactos/{id}")
+    
+    @PutMapping("/activos/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> update(@RequestBody Contacto contacto, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Activo activo, @PathVariable Long id) {
 
         Map<String, Object> response = new HashMap<>();
 
-        Contacto contactoActual = contactoService.consultarContacto(id);
-        Contacto contactoActualizado = null;
+        Activo activoActual = activoService.consultarActivo(id);
+        Activo activoActualizado = null;
 
-        if (contactoActual == null) {
-            response.put("mensaje", "El contacto con ID ".concat(id.toString().concat(" no existe en la base de datos")));
+        if (activoActual == null) {
+            response.put("mensaje", "El activo con ID ".concat(id.toString().concat(" no existe en la base de datos")));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 
         } else {
             try {
-                contactoActual.setCelular(contacto.getCelular());
-                contactoActual.setDireccion(contacto.getDireccion());
-                contactoActual.setEstado(contacto.getEstado());
-                contactoActual.setFechacreacion(contacto.getFechacreacion());
-                contactoActual.setFechamodificacion(contacto.getFechamodificacion());
-                contactoActual.setLatitud(contacto.getLatitud());
-                contactoActual.setLongitud(contacto.getLongitud());
-                contactoActual.setNombre(contacto.getNombre());
-                contactoActual.setTelefono(contacto.getTelefono());
-                contactoActualizado = contactoService.crearContacto(contactoActual);
-                response.put("mensaje", "El contacto fue actualizado de forma exitosa");
-                response.put("empresa", contactoActualizado);
+                activoActual.setCodigo(activo.getCodigo());
+                activoActual.setFechacreacion(activo.getFechacreacion());
+                activoActual.setFechafingarantia(activo.getFechafingarantia());
+                activoActual.setFechamodificacion(activo.getFechamodificacion());
+                activoActual.setIdfabricante(activo.getIdfabricante());
+                activoActual.setIdpropietario(activo.getIdpropietario());
+                activoActual.setIdtecnico(activo.getIdtecnico());
+                activoActual.setImagendetallada(activo.getImagendetallada());
+                activoActual.setImagenprincipal(activo.getImagendetallada());
+                activoActual.setLatitud(activo.getLatitud());
+                activoActual.setLongitud(activo.getLongitud());
+                activoActual.setNombre(activo.getNombre());
+                activoActualizado = activoService.crearActivo(activoActual);
+                response.put("mensaje", "El activo fue actualizado de forma exitosa");
+                response.put("activo", activoActualizado);
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 
             } catch (DataAccessException dae) {
@@ -127,23 +129,22 @@ public class ContactoRestController {
 
     }
     
-    @DeleteMapping("/contactos/{id}")
+    @DeleteMapping("/activos/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
-            contactoService.eliminarContacto(id);
-            
+            activoService.eliminarActivo(id);
+
         } catch (DataAccessException dae) {
-            response.put("mensaje", "Error al eliminar el contacto");
+            response.put("mensaje", "Error al eliminar activo");
             response.put("error", dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "El contacto fue eliminada de forma exitosa");
+        response.put("mensaje", "La empresa fue eliminada de forma exitosa");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 
     }
     
-
 }
