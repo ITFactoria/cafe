@@ -6,12 +6,18 @@
 package com.itfactoria.cafe.backend.restapi.models.dao;
 
 import com.itfactoria.cafe.backend.restapi.models.entity.Empresa;
-import org.springframework.data.repository.CrudRepository;
+import com.itfactoria.cafe.backend.restapi.models.entity.Estado;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  *
  * @author jaironino
  */
-public interface IEmpresaDao extends CrudRepository<Empresa, Long>{
+public interface IEmpresaDao extends JpaRepository<Empresa, Long>{
+    
+    @Query("from Estado")
+    public List<Estado> listarEstados();
     
 }

@@ -5,8 +5,10 @@
  */
 package com.itfactoria.cafe.backend.restapi.controllers;
 
+import com.itfactoria.cafe.backend.restapi.models.entity.Contacto;
 import com.itfactoria.cafe.backend.restapi.models.entity.Empresa;
-import com.itfactoria.cafe.backend.restapi.models.entity.Estado;
+import com.itfactoria.cafe.backend.restapi.models.services.ContactoServiceImpl;
+import com.itfactoria.cafe.backend.restapi.models.services.IContactoService;
 import com.itfactoria.cafe.backend.restapi.models.services.IEmpresaService;
 import java.util.HashMap;
 import java.util.List;
@@ -31,30 +33,30 @@ import org.springframework.web.bind.annotation.RestController;
  */
 @RestController
 @RequestMapping("/api")
-public class EmpresaRestController {
+public class ContactoRestController {
 
     @Autowired
-    private IEmpresaService empresaService;
+    private IContactoService contactoService;
 
-    @GetMapping("/empresas")
-    public List<Empresa> index() {
-        return empresaService.findAll();
+    @GetMapping("/contactos")
+    public List<Contacto> listarContactos() {
+        return contactoService.listarContactos();
 
     }
 
-    @GetMapping("/empresas/{id}")
+    @GetMapping("/contactos/{id}")
     public ResponseEntity<?> show(@PathVariable Long id) {
 
-        Empresa empresa = null;
+        Contacto contacto = null;
         Map<String, Object> response = new HashMap<>();
 
         try {
-            empresa = empresaService.findById(id);
-            if (empresa == null) {
-                response.put("mensaje", "La empresa con ID ".concat(id.toString().concat(" no existe en la base de datos")));
+            contacto = contactoService.consultarContacto(id);
+            if (contacto == null) {
+                response.put("mensaje", "El contacto con ID ".concat(id.toString().concat(" no existe en la base de datos")));
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<Empresa>(empresa, HttpStatus.OK);
+                return new ResponseEntity<Contacto>(contacto, HttpStatus.OK);
             }
 
         } catch (DataAccessException dae) {
@@ -62,23 +64,22 @@ public class EmpresaRestController {
             response.put("error", dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-
     }
 
-    @PostMapping("/empresas")
-    public ResponseEntity<?> create(@RequestBody Empresa empresa) {
+    @PostMapping("/contactos")
+    public ResponseEntity<?> create(@RequestBody Contacto contacto) {
 
-        Empresa empresaNueva = null;
+        Contacto contactoNuevo = null;
         Map<String, Object> response = new HashMap<>();
 
         try {
-            empresaNueva = empresaService.save(empresa);
-            if (empresaNueva == null) {
-                response.put("mensaje", "La empresa con ID ".concat(empresa.getId().toString().concat(" no fue creada en la base de datos")));
+            contactoNuevo = contactoService.crearContacto(contacto);
+            if (contactoNuevo == null) {
+                response.put("mensaje", "El contacto con ID ".concat(contacto.getId().toString().concat(" no fue creado en la base de datos")));
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
             } else {
-                response.put("mensaje", "La empresa fue creada de forma exitosa");
-                response.put("empresa", empresaNueva);
+                response.put("mensaje", "El contacto fue creado de forma exitosa");
+                response.put("empresa", contactoNuevo);
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 
             }
@@ -90,36 +91,33 @@ public class EmpresaRestController {
         }
     }
 
-    @PutMapping("/empresas/{id}")
+    @PutMapping("/contactos/{id}")
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<?> update(@RequestBody Empresa empresa, @PathVariable Long id) {
+    public ResponseEntity<?> update(@RequestBody Contacto contacto, @PathVariable Long id) {
 
         Map<String, Object> response = new HashMap<>();
 
-        Empresa empresaActual = empresaService.findById(id);
-        Empresa empresaActualizada = null;
+        Contacto contactoActual = contactoService.consultarContacto(id);
+        Contacto contactoActualizado = null;
 
-        if (empresaActual == null) {
-            response.put("mensaje", "La empresa con ID ".concat(id.toString().concat(" no existe en la base de datos")));
+        if (contactoActual == null) {
+            response.put("mensaje", "El contacto con ID ".concat(id.toString().concat(" no existe en la base de datos")));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.NOT_FOUND);
 
         } else {
             try {
-                empresaActual.setCorreo(empresa.getCorreo());
-                empresaActual.setDireccion(empresa.getDireccion());
-                empresaActual.setFechacreacion(empresa.getFechacreacion());
-                empresaActual.setIdcontacto(empresa.getIdcontacto());
-                empresaActual.setLatitud(empresa.getLatitud());
-                empresaActual.setIdLogo(empresa.getIdLogo());
-                empresaActual.setLongitud(empresa.getLongitud());
-                empresaActual.setNombre(empresa.getNombre());
-                empresaActual.setNumeroid(empresa.getNumeroid());
-                empresaActual.setTelefono(empresa.getTelefono());
-                empresaActual.setTipoid(empresa.getTipoid());
-                empresaActual.setEstado(empresa.getEstado());
-                empresaActualizada = empresaService.save(empresaActual);
-                response.put("mensaje", "La empresa fue actualizada de forma exitosa");
-                response.put("empresa", empresaActualizada);
+                contactoActual.setCelular(contacto.getCelular());
+                contactoActual.setDireccion(contacto.getDireccion());
+                contactoActual.setEstado(contacto.getEstado());
+                contactoActual.setFechacreacion(contacto.getFechacreacion());
+                contactoActual.setFechamodificacion(contacto.getFechamodificacion());
+                contactoActual.setLatitud(contacto.getLatitud());
+                contactoActual.setLongitud(contacto.getLongitud());
+                contactoActual.setNombre(contacto.getNombre());
+                contactoActual.setTelefono(contacto.getTelefono());
+                contactoActualizado = contactoService.crearContacto(contactoActual);
+                response.put("mensaje", "El contacto fue actualizado de forma exitosa");
+                response.put("empresa", contactoActualizado);
                 return new ResponseEntity<Map<String, Object>>(response, HttpStatus.CREATED);
 
             } catch (DataAccessException dae) {
@@ -131,31 +129,24 @@ public class EmpresaRestController {
         }
 
     }
-
-    @DeleteMapping("/empresas/{id}")
+    
+    @DeleteMapping("/contactos/{id}")
     public ResponseEntity delete(@PathVariable Long id) {
 
         Map<String, Object> response = new HashMap<>();
 
         try {
-            empresaService.delete(id);
-
+            contactoService.eliminarContacto(id);
+            
         } catch (DataAccessException dae) {
-            response.put("mensaje", "Error al eliminar empresa");
+            response.put("mensaje", "Error al eliminar el contacto");
             response.put("error", dae.getMessage().concat(": ").concat(dae.getMostSpecificCause().getMessage()));
             return new ResponseEntity<Map<String, Object>>(response, HttpStatus.INTERNAL_SERVER_ERROR);
         }
-        response.put("mensaje", "La empresa fue eliminada de forma exitosa");
+        response.put("mensaje", "El contacto fue eliminada de forma exitosa");
         return new ResponseEntity<Map<String, Object>>(response, HttpStatus.OK);
 
     }
-    
-    @GetMapping("/empresas/estados")
-    public List<Estado> listarEstados() {
-        return empresaService.listarEstados();
-
-    }
-    
     
 
 }

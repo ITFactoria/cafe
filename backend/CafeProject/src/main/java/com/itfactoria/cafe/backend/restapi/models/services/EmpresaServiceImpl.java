@@ -7,6 +7,7 @@ package com.itfactoria.cafe.backend.restapi.models.services;
 
 import com.itfactoria.cafe.backend.restapi.models.dao.IEmpresaDao;
 import com.itfactoria.cafe.backend.restapi.models.entity.Empresa;
+import com.itfactoria.cafe.backend.restapi.models.entity.Estado;
 import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,8 +27,6 @@ public class EmpresaServiceImpl implements IEmpresaService{
     @Transactional(readOnly = true) 
     public List<Empresa> findAll() {
         return (List<Empresa>) empresaDao.findAll();
-                
-        
     }
 
     @Override
@@ -47,6 +46,13 @@ public class EmpresaServiceImpl implements IEmpresaService{
     @Transactional
     public void delete(Long id) {
         empresaDao.deleteById(id);
+        
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<Estado> listarEstados() {
+        return (List<Estado>)empresaDao.listarEstados();
         
     }
     

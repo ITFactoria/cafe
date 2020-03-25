@@ -8,7 +8,6 @@ package com.itfactoria.cafe.backend.restapi.models.entity;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,39 +25,30 @@ import javax.validation.constraints.NotNull;
  * @author jaironino
  */
 @Entity
-@Table(name = "empresas")
-public class Empresa implements Serializable {
-
+@Table(name="contactos")
+public class Contacto implements Serializable{
+    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull(message = "Tipo identficacion no puede estar vacio")
-    private String tipoid;
-    
-    @NotNull(message = "Numero identificacion no puede estar vacio")
-    @Column(nullable=false, unique =true)
-    private Long numeroid;
-    
     @NotNull(message = "Nombre no puede estar vacio")
-    @Column(nullable=false)
     private String nombre;
     
-    @NotNull(message = "Correo no puede estar vacio")
-    @Column(nullable=false, unique =true)
-    private String correo;
+    @NotNull(message = "Telefono no puede estar vacio")
+    private String telefono;
     
     @NotNull(message = "Telefono no puede estar vacio")
-    @Column(nullable=false)
-    private String telefono;
+    private String celular;
     
     @NotNull(message = "Direccion no puede estar vacia")
     private String direccion;
     
-    @NotNull(message = "Contacto no puede estar vacio")
-    private int idcontacto;
-    
-    private int idlogo;
+    @NotNull(message = "Nombre no puede estar vacio")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="estado_id")
+    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
+    private Estado estado;
     
     @NotNull(message = "Latitud no puede estar vacio")
     private String latitud;
@@ -73,12 +63,6 @@ public class Empresa implements Serializable {
     @NotNull(message = "Fecha modificación no puede estar vacio")
     @Temporal(TemporalType.DATE)
     private Date fechamodificacion;
-    
-    @NotNull(message = "Estado no puede estar vacio")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="estado_id")
-    @JsonIgnoreProperties({"hibernateLazyInitializer","handler"})
-    private Estado estado;
 
     public Long getId() {
         return id;
@@ -86,22 +70,6 @@ public class Empresa implements Serializable {
 
     public void setId(Long id) {
         this.id = id;
-    }
-
-    public String getTipoid() {
-        return tipoid;
-    }
-
-    public void setTipoid(String tipoid) {
-        this.tipoid = tipoid;
-    }
-
-    public Long getNumeroid() {
-        return numeroid;
-    }
-
-    public void setNumeroid(Long numeroid) {
-        this.numeroid = numeroid;
     }
 
     public String getNombre() {
@@ -112,20 +80,20 @@ public class Empresa implements Serializable {
         this.nombre = nombre;
     }
 
-    public String getCorreo() {
-        return correo;
-    }
-
-    public void setCorreo(String correo) {
-        this.correo = correo;
-    }
-
     public String getTelefono() {
         return telefono;
     }
 
     public void setTelefono(String telefono) {
         this.telefono = telefono;
+    }
+
+    public String getCelular() {
+        return celular;
+    }
+
+    public void setCelular(String celular) {
+        this.celular = celular;
     }
 
     public String getDireccion() {
@@ -136,20 +104,12 @@ public class Empresa implements Serializable {
         this.direccion = direccion;
     }
 
-    public int getIdcontacto() {
-        return idcontacto;
+    public Estado getEstado() {
+        return estado;
     }
 
-    public void setIdcontacto(int idcontacto) {
-        this.idcontacto = idcontacto;
-    }
-
-    public int getIdLogo() {
-        return idlogo;
-    }
-
-    public void setIdLogo(int logo) {
-        this.idlogo = logo;
+    public void setEstado(Estado estado) {
+        this.estado = estado;
     }
 
     public String getLatitud() {
@@ -183,17 +143,7 @@ public class Empresa implements Serializable {
     public void setFechamodificacion(Date fechamodificacion) {
         this.fechamodificacion = fechamodificacion;
     }
-
-    public Estado getEstado() {
-        return estado;
-    }
-
-    public void setEstado(Estado estado) {
-        this.estado = estado;
-    }
     
     
-    
-
     
 }

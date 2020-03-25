@@ -6,6 +6,7 @@
 package com.itfactoria.cafe.backend.restapi.models.services;
 
 import com.itfactoria.cafe.backend.restapi.models.entity.Empresa;
+import com.itfactoria.cafe.backend.restapi.models.entity.Estado;
 import java.util.List;
 
 /**
@@ -18,6 +19,7 @@ public interface IEmpresaService {
     public Empresa findById(Long Id);
     public Empresa save(Empresa empresa);
     public void delete(Long id);
+    public List<Estado> listarEstados();
    
     
 }
